@@ -6,6 +6,8 @@ import morgan from 'morgan'
 import helmet from 'helmet' 
 import cors from 'cors' 
 import { limiter } from '../middlewares/rate.limit.js'
+import authRoutes from '../src/auth/auth.routes.js'
+import { createDefaultAdmin } from '../src/auth/auth.controller.js'
 
 dotenv.config();
 const configs = (app)=>{
@@ -25,7 +27,7 @@ export const initServer = async () => {
         routes(app);
 
         // Ejecutar antes de levantar el servidor
-        //await ensureDefaultCategory();
+        await createDefaultAdmin()
 
         app.listen(process.env.PORT);
         console.log(`Server running in port ${process.env.PORT}`);
@@ -33,8 +35,8 @@ export const initServer = async () => {
     } catch (err) {
         console.error('Servidor init failed', err);
     }
-};
+}
 
 const routes = (app)=>{
-    //app.use('/api/auth', authRoutes);z
+    app.use(authRoutes)
 }
