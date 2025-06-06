@@ -1,7 +1,15 @@
-// validaciones de modelos
+// src/helpers/validators.js
+
 import { body } from 'express-validator'
 import { validateErrors } from './validate.error.js'
-import { existEmail, existUsername, existDPI } from './db.validators.js'
+import {
+  existEmail,
+  existUsername,
+  existDPI,
+  existMedicalHistory,
+  existUser,
+  existDrug
+} from './db.validators.js'
 
 export const registerPatientValidator = [
   body('name', 'Name cannot be empty').notEmpty(),
@@ -50,5 +58,63 @@ export const loginValidator = [
     .notEmpty()
     .isLength({ min: 8 })
     .isStrongPassword(),
+  validateErrors
+]
+
+export const prescriptionValidator = [
+  // medicalHistory: requerido, debe ser ObjectId válido y existir en MedicalHistory
+  body('medicalHistory', 'medicalHistory es requerido')
+    .notEmpty()
+    .isMongoId()
+    .withMessage('medicalHistory debe ser un ID válido')
+    .bail()
+    .custom(existMedicalHistory),
+
+  // doctor: requerido, debe ser ObjectId válido y existir en User
+  body('doctor', 'Doctor es requerido')
+    .notEmpty()
+    .isMongoId()
+    .withMessage('doctor debe ser un ID válido')
+    .bail()
+    .custom(existUser),
+
+  // medications: arreglo con al menos un elemento
+  body('medications', 'Medications debe ser un arreglo con al menos un elemento')
+    .isArray({ min: 1 }),
+
+  // Para cada elemento de medications:
+  body('medications.*.drug', 'Drug es requerido')
+    .notEmpty()
+    .isMongoId()
+    .withMessage('Drug debe ser un ID válido')
+    .bail()
+    .custom(existDrug),
+
+  body('medications.*.dosage', 'Dosage es requerido')
+    .notEmpty()
+    .isString()
+    .withMessage('Dosage debe ser texto'),
+
+  body('medications.*.frequency', 'Frequency es requerido')
+    .notEmpty()
+    .isString()
+    .withMessage('Frequency debe ser texto'),
+
+  body('medications.*.duration', 'Duration es requerido')
+    .notEmpty()
+    .isString()
+    .withMessage('Duration debe ser texto'),
+
+  body('medications.*.notes')
+    .optional()
+    .isString()
+    .withMessage('Notes debe ser texto'),
+
+  // notes (campo general) es opcional
+  body('notes')
+    .optional()
+    .isString()
+    .withMessage('Notes debe ser texto'),
+
   validateErrors
 ]

@@ -7,6 +7,8 @@ import helmet from 'helmet'
 import cors from 'cors' 
 import { limiter } from '../middlewares/rate.limit.js'
 import authRoutes from '../src/auth/auth.routes.js'
+import reportRoutes from '../src/report/report.routes.js'
+import prescriptionRoutes from '../src/prescription/prescription.routes.js'
 import { createDefaultAdmin } from '../src/auth/auth.controller.js'
 import diagnosisRoutes from '../src/diagnosis/diagnosis.routes.js'
 dotenv.config();
@@ -40,5 +42,6 @@ export const initServer = async () => {
 const routes = (app)=>{
     app.use(authRoutes)
     app.use(diagnosisRoutes)
-    
+    app.use('/v1/report', reportRoutes)
+    app.use('/v1/prescription', prescriptionRoutes)
 }
