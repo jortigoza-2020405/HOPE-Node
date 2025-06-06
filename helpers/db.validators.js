@@ -21,3 +21,14 @@ export const existDPI = async (dpi = '') => {
   const exist = await User.findOne({ DPI: dpi })
   if (exist) throw new Error(`DPI already registered`)
 }
+
+export const findUser = async(id)=>{
+    try{
+        const userExist = await User.findById(id)
+        if(!userExist) return false
+        return userExist
+    }catch(err){
+        console.error(err)
+        return false
+    }
+}

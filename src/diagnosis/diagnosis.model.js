@@ -11,6 +11,7 @@ const diagnosisSchema = Schema(
       type: String,
       required:[true, 'Code is required'],
       unique: true,
+      minLength: [25, `Can't be overcome 25 characters`],
       trim: true
     },
     name: {
