@@ -13,6 +13,12 @@ const userSchema = Schema(
             required: [true, 'Surname is required'],
             maxLength: [25, `Can't be overcome 25 characters`],
         },
+        DPI: {
+            type: String,
+            required: [true, 'DPI is required'],
+            unique: true,
+            length: [13, 'DPI must be exactly 13 digits']
+        },
         username: {
             type: String,
             required: [false, 'Username is required'],

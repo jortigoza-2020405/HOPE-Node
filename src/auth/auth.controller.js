@@ -7,17 +7,19 @@ import { generateJwt } from '../../utils/jwt.js'
 // Registrar paciente
 export const registerPatient = async (req, res) => {
   try {
-    let data = req.body
+    const data = req.body
 
     const user = new User({
       name: data.name,
       surname: data.surname,
       username: data.username,
+      DPI: data.DPI,
       email: data.email,
       phone: data.phone,
       password: await encrypt(data.password),
       role: 'PATIENT'
     })
+
     const savedUser = await user.save()
 
     const patient = new Patient({
@@ -34,7 +36,8 @@ export const registerPatient = async (req, res) => {
 
     return res.status(201).send({
       message: 'Patient registered successfully',
-      patientId: patient._id
+      user: savedUser,
+      patient
     })
   } catch (err) {
     console.error(err)
@@ -54,11 +57,18 @@ export const loginPatient = async (req, res) => {
     const match = await checkPassword(user.password, password)
     if (!match) return res.status(401).send({ message: 'Invalid password' })
 
-    const token = await generateJwt({ uid: user._id, name: user.name, role: user.role })
+    const token = await generateJwt({
+      uid: user._id,
+      name: user.name,
+      role: user.role
+    })
+
+    const patient = await Patient.findOne({ user: user._id })
 
     return res.send({
       message: `Welcome ${user.name}`,
       user,
+      patient,
       token
     })
   } catch (err) {
@@ -77,6 +87,7 @@ export const createDefaultAdmin = async () => {
       name: 'Admin',
       surname: 'HOPE',
       username: 'admin',
+      DPI: '1234567890123',
       email: 'admin@hope.com',
       password: await encrypt('Admin123!'),
       phone: '12345678',
@@ -122,11 +133,11 @@ export const loginAdmin = async (req, res) => {
         _id: admin._id,
         name: admin.name,
         email: admin.email,
-        role: admin.role
+        role: admin.role,
+        DPI: admin.DPI
       },
       token
     })
-
   } catch (err) {
     console.error(err)
     return res.status(500).send({ message: 'Login error', err })

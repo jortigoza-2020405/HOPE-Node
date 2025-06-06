@@ -16,3 +16,8 @@ export const existEmail = async(email)=>{
         throw new Error(`Email ${email} is already taken`)
     }
 }
+
+export const existDPI = async (dpi = '') => {
+  const exist = await User.findOne({ DPI: dpi })
+  if (exist) throw new Error(`DPI already registered`)
+}
