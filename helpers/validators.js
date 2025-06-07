@@ -52,3 +52,66 @@ export const loginValidator = [
     .isStrongPassword(),
   validateErrors
 ]
+
+export const updatePatientValidator = [
+  body('birthDate', 'Invalid birth date')
+    .optional()
+    .isDate(),
+  body('gender', 'Invalid gender')
+    .optional()
+    .isIn(['MALE', 'FEMALE']),
+  body('address', 'Address must be less than 100 characters')
+    .optional()
+    .isLength({ max: 100 }),
+  body('bloodType', 'Invalid blood type')
+    .optional()
+    .isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+  validateErrors
+]
+
+export const addMedicineValidator = [
+  body('name', 'Medicine name cannot be empty')
+    .notEmpty()
+    .custom(existMedicineName),
+  body('description', 'Description cannot be empty')
+    .notEmpty(),
+  body('expirationDate', 'Expiration date must be a valid date')
+    .notEmpty()
+    .isISO8601()
+    .toDate(),
+  body('stock', 'Stock must be a number greater than or equal to 0')
+    .notEmpty()
+    .isInt({ min: 0 }),
+  body('provider', 'Provider name cannot be empty')
+    .notEmpty(),
+  validateErrors
+]
+
+export const updateMedicineValidator = [
+  body('name')
+    .optional()
+    .notEmpty()
+    .withMessage('Name must not be empty if provided'),
+
+  body('description')
+    .optional()
+    .notEmpty()
+    .withMessage('Description must not be empty if provided'),
+
+  body('expirationDate')
+    .optional()
+    .isISO8601()
+    .withMessage('Expiration date must be valid'),
+
+  body('stock')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Stock must be a non-negative number'),
+
+  body('provider')
+    .optional()
+    .notEmpty()
+    .withMessage('Provider must not be empty if provided'),
+
+  validateErrors
+]

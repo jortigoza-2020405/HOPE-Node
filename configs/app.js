@@ -9,6 +9,8 @@ import { limiter } from '../middlewares/rate.limit.js'
 import authRoutes from '../src/auth/auth.routes.js'
 import { createDefaultAdmin } from '../src/auth/auth.controller.js'
 import diagnosisRoutes from '../src/diagnosis/diagnosis.routes.js'
+import patientRoutes from '../src/patient/patient.routes.js'
+import pharmacyRoutes from '../src/pharmacy/pharmacy.routes.js'
 dotenv.config();
 const configs = (app)=>{
     app.use(express.json())
@@ -40,5 +42,7 @@ export const initServer = async () => {
 const routes = (app)=>{
     app.use(authRoutes)
     app.use(diagnosisRoutes)
+    app.use('/v1/patients', patientRoutes)
+    app.use('/v1/pharmacy', pharmacyRoutes)
     
 }

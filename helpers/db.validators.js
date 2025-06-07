@@ -32,3 +32,8 @@ export const findUser = async(id)=>{
         return false
     }
 }
+
+export const existMedicineName = async (name = '') => {
+  const exists = await Pharmacy.findOne({ name })
+    if (exists) throw new Error(`Medicine ${name} already exists`)
+}
