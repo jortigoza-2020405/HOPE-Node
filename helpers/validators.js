@@ -1,7 +1,7 @@
 // validaciones de modelos
 import { body } from 'express-validator'
 import { validateErrors } from './validate.error.js'
-import { existEmail, existUsername, existDPI, diagnosisCodeExists, patientExists, doctorExists, diagnosesExist } from './db.validators.js'
+import { existEmail, existUsername, existDPI, diagnosisCodeExists, patientExists, doctorExists, diagnosesExist, existMedicineName } from './db.validators.js'
 
 export const registerPatientValidator = [
   body('name', 'Name cannot be empty').notEmpty(),
@@ -52,7 +52,6 @@ export const loginValidator = [
     .isStrongPassword(),
   validateErrors
 ]
-
 export const appointmentValidator = [
   body('patient', 'Patient ID cannot be empty').notEmpty(),
   body('doctor', 'Doctor ID cannot be empty').notEmpty(),
@@ -85,5 +84,65 @@ export const medicalHistoryValidator = [
   body('vitalSigns.oxygenSaturation').optional().isNumeric(),
 //  body('prescriptions', 'Prescriptions must be an array of IDs').isArray({ min: 1 }).bail().custom(prescriptionsExist),
   body('testResults').optional().isArray(),
+]
+export const updatePatientValidator = [
+  body('birthDate', 'Invalid birth date')
+    .optional()
+    .isDate(),
+  body('gender', 'Invalid gender')
+    .optional()
+    .isIn(['MALE', 'FEMALE']),
+  body('address', 'Address must be less than 100 characters')
+    .optional()
+    .isLength({ max: 100 }),
+  body('bloodType', 'Invalid blood type')
+    .optional()
+    .isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+  validateErrors
+]
+
+export const addMedicineValidator = [
+  body('name', 'Medicine name cannot be empty')
+    .notEmpty()
+    .custom(existMedicineName),
+  body('description', 'Description cannot be empty')
+    .notEmpty(),
+  body('expirationDate', 'Expiration date must be a valid date')
+    .notEmpty()
+    .isISO8601()
+    .toDate(),
+  body('stock', 'Stock must be a number greater than or equal to 0')
+    .notEmpty()
+    .isInt({ min: 0 }),
+  body('provider', 'Provider name cannot be empty')
+    .notEmpty(),
+  validateErrors
+]
+
+export const updateMedicineValidator = [
+  body('name')
+    .optional()
+    .notEmpty()
+    .withMessage('Name must not be empty if provided'),
+
+  body('description')
+    .optional()
+    .notEmpty()
+    .withMessage('Description must not be empty if provided'),
+
+  body('expirationDate')
+    .optional()
+    .isISO8601()
+    .withMessage('Expiration date must be valid'),
+
+  body('stock')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Stock must be a non-negative number'),
+
+  body('provider')
+    .optional()
+    .notEmpty()
+    .withMessage('Provider must not be empty if provided'),
   validateErrors
 ]

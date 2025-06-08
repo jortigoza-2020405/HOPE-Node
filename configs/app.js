@@ -11,6 +11,8 @@ import { createDefaultAdmin } from '../src/auth/auth.controller.js'
 import diagnosisRoutes from '../src/diagnosis/diagnosis.routes.js'
 import appointmentRoutes from '../src/appointment/appointment.routes.js'
 import medicalHistoryRoutes from '../src/medicalHistory/medicalHistory.routes.js'
+import patientRoutes from '../src/patient/patient.routes.js'
+import pharmacyRoutes from '../src/pharmacy/pharmacy.routes.js'
 dotenv.config();
 const configs = (app)=>{
     app.use(express.json())
@@ -44,4 +46,6 @@ const routes = (app)=>{
     app.use('/v1/diagnosis',diagnosisRoutes)
     app.use('/v1/appointment', appointmentRoutes)
     app.use('/v1/medicalHistory', medicalHistoryRoutes)
+    app.use('/v1/patients', patientRoutes)
+    app.use('/v1/pharmacy', pharmacyRoutes)
 }

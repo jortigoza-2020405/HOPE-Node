@@ -38,7 +38,6 @@ export const findUser = async(id)=>{
         return false
     }
 }
-
 // Para citas
 // Verifica si ya hay una cita programada con mismo doctor, fecha y hora
 export const existAppointmentById = async (id = '') => {
@@ -99,3 +98,8 @@ export const prescriptionsExist = async (ids = []) => {
 }
 
 */
+
+export const existMedicineName = async (name = '') => {
+  const exists = await Pharmacy.findOne({ name })
+    if (exists) throw new Error(`Medicine ${name} already exists`)
+}
