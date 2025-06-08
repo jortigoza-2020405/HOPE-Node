@@ -22,15 +22,15 @@ const medicalHistorySchema = Schema (
             type: String,
             required: [true, 'Reason for Visit is required'],
         },
-        symptoms: {
-            type: [String], 
-            required: [true, 'Symptoms is required'],
-        },
-        diagnosis: [{
+    //    symptoms: {
+     //       type: [String], 
+     //       required: [true, 'Symptoms is required'],
+    //    },
+        diagnosis: {
             type: Schema.Types.ObjectId,
             ref: 'Diagnosis',
             required: [true, 'Diagnosis is required'],
-        }],
+        },
         vitalSigns: {
         temperature: Number,
         heartRate: Number,
@@ -50,15 +50,15 @@ const medicalHistorySchema = Schema (
     treatmentPlan: {
         type: String
     },
-    prescriptions: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Prescription',
-        required: [true, 'Prescription is required'],
-    }],
-    testResults: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Result'
-    }],
+//    prescriptions: [{
+ //       type: Schema.Types.ObjectId,
+ //       ref: 'Prescription',
+   //     required: [true, 'Prescription is required'],
+  //  }],
+//    testResults: [{
+ //       type: Schema.Types.ObjectId,
+    //    ref: 'Result'
+  //  }],
     followUp: {
         type: String 
     },

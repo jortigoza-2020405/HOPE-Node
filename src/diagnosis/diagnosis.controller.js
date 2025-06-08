@@ -124,27 +124,27 @@ export const updateDiagnosis = async (req, res) => {
             return res.status(403).send({
                 success: false,
                 message: 'User not authenticated or not found',
-            });
+            })
         }
 
         const updatedData = {
             ...data,
             updatedBy: user.name || user.id 
-        };
+        }
 
         
         const updatedDiagnosis = await Diagnosis.findByIdAndUpdate(
             id,
             updatedData,
             { new: true }
-        );
+        )
 
         
         if (!updatedDiagnosis) {
             return res.status(404).send({
                 success: false,
                 message: 'Diagnosis not found and not updated',
-            });
+            })
         }
 
         
@@ -153,7 +153,7 @@ export const updateDiagnosis = async (req, res) => {
             message: 'Diagnosis updated successfully',
             updatedDiagnosis,
             updatedBy: user.name || user.id, 
-        });
+        })
 
     } catch (error) {
         console.error('General error', error);
@@ -161,6 +161,7 @@ export const updateDiagnosis = async (req, res) => {
             message: 'General error during update',
             error,
             success: false,
-        });
+        })
     }
-};
+}
+

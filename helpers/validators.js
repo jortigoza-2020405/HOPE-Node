@@ -1,7 +1,7 @@
 // validaciones de modelos
 import { body } from 'express-validator'
 import { validateErrors } from './validate.error.js'
-import { existEmail, existUsername, existDPI } from './db.validators.js'
+import { existEmail, existUsername, existDPI, diagnosisCodeExists, patientExists, doctorExists, diagnosesExist } from './db.validators.js'
 
 export const registerPatientValidator = [
   body('name', 'Name cannot be empty').notEmpty(),
@@ -50,5 +50,40 @@ export const loginValidator = [
     .notEmpty()
     .isLength({ min: 8 })
     .isStrongPassword(),
+  validateErrors
+]
+
+export const appointmentValidator = [
+  body('patient', 'Patient ID cannot be empty').notEmpty(),
+  body('doctor', 'Doctor ID cannot be empty').notEmpty(),
+  body('date', 'Date cannot be empty').notEmpty(),
+  body('timeSlot', 'Time Slot cannot be empty').notEmpty(),
+  body('reason', 'Reason cannot be empty').notEmpty(),
+  body('status').optional().isIn(['scheduled', 'completed', 'cancelled', 'no-show']),
+  body('notes', 'Notes cannot be empty').notEmpty(),
+  validateErrors
+]
+
+export const diagnosisValidator = [
+  body('code', 'Code cannot be empty').notEmpty().custom(diagnosisCodeExists),
+  body('name', 'Name cannot be empty').notEmpty(),
+  body('description', 'Description cannot be empty').notEmpty(),
+  body('severity').optional().isIn(['mild', 'moderate', 'severe', 'chronic']),
+  validateErrors
+]
+
+export const medicalHistoryValidator = [
+  body('patient', 'Patient ID cannot be empty').notEmpty().bail().custom(patientExists),
+  body('doctor', 'Doctor ID cannot be empty').notEmpty().bail().custom(doctorExists),
+  body('reasonForVisit', 'Reason for Visit cannot be empty').notEmpty(),
+//  body('symptoms', 'Symptoms cannot be empty and must be an array').isArray({ min: 1 }),
+  body('diagnosis', 'Diagnosis must be an array of IDs').notEmpty().custom(diagnosesExist),
+  body('vitalSigns.temperature').optional().isNumeric(),
+  body('vitalSigns.heartRate').optional().isNumeric(),
+  body('vitalSigns.respiratoryRate').optional().isNumeric(),
+  body('vitalSigns.bloodPressure').optional().isString(),
+  body('vitalSigns.oxygenSaturation').optional().isNumeric(),
+//  body('prescriptions', 'Prescriptions must be an array of IDs').isArray({ min: 1 }).bail().custom(prescriptionsExist),
+  body('testResults').optional().isArray(),
   validateErrors
 ]

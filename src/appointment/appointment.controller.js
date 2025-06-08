@@ -234,3 +234,147 @@ export const getAppointmentsFiltered = async (req, res) => {
     }
   }
 
+// Actualizar una cita con validaciones y confirmación
+export const updateAppointment = async (req, res) => {
+  try {
+    const id = req.params.id
+    const data = req.body
+
+   
+    if (!data.confirmation || data.confirmation !== 'YES') {
+      return res.status(400).send({
+        success: false,
+        message:
+          'Confirmation not received. Please confirm the action by setting confirmation: "YES".',
+      })
+    }
+
+    const user = req.user
+    if (!user) {
+      return res.status(403).send({
+        success: false,
+        message: 'User not authenticated or not found.',
+      })
+    }
+
+    
+    if (data.date && isNaN(Date.parse(data.date))) {
+      return res.status(400).send({
+        success: false,
+        message: 'Invalid date format. Use YYYY-MM-DD.',
+      })
+    }
+
+    
+    const timeSlotPattern = /^\d{2}:\d{2}-\d{2}:\d{2}$/
+    if (data.timeSlot && !timeSlotPattern.test(data.timeSlot)) {
+      return res.status(400).send({
+        success: false,
+        message:
+          'Invalid timeSlot format. Use HH:MM-HH:MM, e.g., 09:00-09:30.',
+      })
+    }
+
+    
+    if (data.doctor && !mongoose.Types.ObjectId.isValid(data.doctor)) {
+      return res.status(400).send({
+        success: false,
+        message: 'Invalid doctor ID format.',
+      })
+    }
+
+    
+    if (data.date && data.timeSlot && data.doctor) {
+      const existingAppointment = await Appointment.findOne({
+        date: new Date(data.date),
+        timeSlot: data.timeSlot,
+        doctor: data.doctor,
+        _id: { $ne: id }, 
+      })
+
+      if (existingAppointment) {
+        return res.status(409).send({
+          success: false,
+          message:
+            'The selected date and time slot are already booked with this doctor.',
+        })
+      }
+    }
+
+    
+    const updatedFields = {
+      ...data,
+      updatedBy: user.name || user.id,
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      id,
+      updatedFields,
+      { new: true }
+    )
+
+    if (!updatedAppointment) {
+      return res.status(404).send({
+        success: false,
+        message: 'Appointment not found and not updated.',
+      })
+    }
+
+    return res.send({
+      success: true,
+      message: 'Appointment updated successfully.',
+      updatedAppointment,
+      updatedBy: user.name || user.id,
+    })
+  } catch (error) {
+    console.error('Error updating appointment:', error)
+    return res.status(500).send({
+      success: false,
+      message: 'Error updating appointment.',
+      error: error.message,
+    })
+  }
+}
+
+//Cancelar una cita
+
+export const cancelAppointment = async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+
+    // Buscar la cita
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).send({
+        message: 'Appointment not found',
+        success: false,
+      })
+    }
+
+    
+    if (['cancelled', 'completed', 'no-show'].includes(appointment.status)) {
+      return res.status(400).send({
+        message: `Appointment already marked as ${appointment.status}`,
+        success: false,
+      })
+    }
+
+    
+    appointment.status = 'cancelled'
+    await appointment.save()
+
+    return res.send({
+      message: 'Appointment cancelled successfully',
+      appointment,
+      success: true,
+    })
+
+  } catch (error) {
+    console.error('Error cancelling appointment:', error)
+    return res.status(500).send({
+      message: 'Server error cancelling appointment',
+      error,
+      success: false,
+    })
+  }
+} 
