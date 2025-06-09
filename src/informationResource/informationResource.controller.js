@@ -1,1 +1,0 @@
-//InformationResource controller

@@ -1,1 +1,0 @@
-//Pharmacy routes
