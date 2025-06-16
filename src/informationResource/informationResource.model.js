@@ -35,4 +35,4 @@ const resourceInformationSchema = new Schema(
   }
 )
  
-export default model('Information', ResourceinformationSchema)
+export default model('Information', resourceInformationSchema)

@@ -1,4 +1,3 @@
-//Configurar el servidor express (HTTP)
 'use strict'
 import dotenv from 'dotenv';
 import express from 'express'
@@ -15,7 +14,10 @@ import appointmentRoutes from '../src/appointment/appointment.routes.js'
 import medicalHistoryRoutes from '../src/medicalHistory/medicalHistory.routes.js'
 import patientRoutes from '../src/patient/patient.routes.js'
 import pharmacyRoutes from '../src/pharmacy/pharmacy.routes.js'
+import informationResourceRoutes from '../src/informationResource/informationResource.routes.js'
+
 dotenv.config();
+
 const configs = (app)=>{
     app.use(express.json())
     app.use(express.urlencoded({extended: false}))
@@ -31,13 +33,10 @@ export const initServer = async () => {
     try {
         configs(app);
         routes(app);
-
         // Ejecutar antes de levantar el servidor
         await createDefaultAdmin()
-
         app.listen(process.env.PORT);
         console.log(`Server running in port ${process.env.PORT}`);
-
     } catch (err) {
         console.error('Servidor init failed', err);
     }
@@ -52,4 +51,5 @@ const routes = (app)=>{
     app.use('/v1/pharmacy', pharmacyRoutes)
     app.use('/v1/report', reportRoutes)
     app.use('/v1/prescription', prescriptionRoutes)
+    app.use('/v1/informationResource', informationResourceRoutes)
 }
