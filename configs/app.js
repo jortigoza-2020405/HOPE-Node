@@ -7,6 +7,8 @@ import helmet from 'helmet'
 import cors from 'cors' 
 import { limiter } from '../middlewares/rate.limit.js'
 import authRoutes from '../src/auth/auth.routes.js'
+import reportRoutes from '../src/report/report.routes.js'
+import prescriptionRoutes from '../src/prescription/prescription.routes.js'
 import { createDefaultAdmin } from '../src/auth/auth.controller.js'
 import diagnosisRoutes from '../src/diagnosis/diagnosis.routes.js'
 import appointmentRoutes from '../src/appointment/appointment.routes.js'
@@ -48,4 +50,6 @@ const routes = (app)=>{
     app.use('/v1/medicalHistory', medicalHistoryRoutes)
     app.use('/v1/patients', patientRoutes)
     app.use('/v1/pharmacy', pharmacyRoutes)
+    app.use('/v1/report', reportRoutes)
+    app.use('/v1/prescription', prescriptionRoutes)
 }

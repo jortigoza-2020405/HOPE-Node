@@ -38,6 +38,7 @@ export const findUser = async(id)=>{
         return false
     }
 }
+
 // Para citas
 // Verifica si ya hay una cita programada con mismo doctor, fecha y hora
 export const existAppointmentById = async (id = '') => {
@@ -102,4 +103,31 @@ export const prescriptionsExist = async (ids = []) => {
 export const existMedicineName = async (name = '') => {
   const exists = await Pharmacy.findOne({ name })
     if (exists) throw new Error(`Medicine ${name} already exists`)
+}
+
+export const existDrug = async (id) => {
+    const drug = await Pharmacy.findById(id)
+    if (!drug) {
+      console.error(`Drug with ID ${id} does not exist in Pharmacy`)
+      throw new Error(`Drug with ID ${id} does not exist in Pharmacy`)
+    }
+    return true
+}  
+
+export const existMedicalHistory = async (id) => {
+    const mh = await MedicalHistory.findById(id)
+    if (!mh) {
+      console.error(`MedicalHistory with ID ${id} does not exist`)
+      throw new Error(`MedicalHistory with ID ${id} does not exist`)
+    }
+    return true
+}
+
+export const existUser = async (id) => {
+    const user = await User.findById(id)
+    if (!user) {
+      console.error(`User con ID ${id} no existe`)
+      throw new Error(`User con ID ${id} no existe`)
+    }
+    return true
 }
