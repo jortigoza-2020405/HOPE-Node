@@ -1,5 +1,6 @@
 // Validaciones con relacion entidad - base de datos
 import User from '../src/user/user.model.js'
+import Pharmacy from '../src/pharmacy/pharmacy.model.js'
 
 export const existUsername = async(username)=>{
     const alreadyUsername = await User.findOne({username})

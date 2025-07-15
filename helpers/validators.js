@@ -1,7 +1,7 @@
 // validaciones de modelos
 import { body } from 'express-validator'
 import { validateErrors } from './validate.error.js'
-import { existEmail, existUsername, existDPI } from './db.validators.js'
+import { existEmail, existUsername, existDPI, existMedicineName} from './db.validators.js'
 
 export const registerPatientValidator = [
   body('name', 'Name cannot be empty').notEmpty(),
