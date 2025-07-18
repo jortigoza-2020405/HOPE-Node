@@ -32,47 +32,37 @@ export const addMedicine = async (req, res) => {
 // Obtener todos los medicamentos con paginación
 export const getAllMedicines = async (req, res) => {
   try {
-    const { limit = 10, skip = 0 } = req.body
+    const limit = parseInt(req.query.limit) || 10
+    const skip = parseInt(req.query.skip) || 0
 
-    const medicines = await Pharmacy.find
-      (
-        { status: true }
-      )
-      .skip(Number(skip))
-      .limit(Number(limit))
+    const medicines = await Pharmacy.find({ status: true })
+      .skip(skip)
+      .limit(limit)
 
     const total = await Pharmacy.countDocuments({ status: true })
 
-    if (medicines.length === 0) return res.status(404).send
-      (
-        {
-          success: false,
-          message: 'No medicines found'
-        }
-      )
+    if (medicines.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: 'No medicines found'
+      })
+    }
 
-    return res.send
-      (
-        {
-          success: true,
-          message: 'Medicines retrieved successfully',
-          medicines,
-          total
-        }
-      )
+    return res.send({
+      success: true,
+      message: 'Medicines retrieved successfully',
+      medicines,
+      total
+    })
   } catch (error) {
     console.error(error)
-    return res.status(500).send
-      (
-        {
-          success: false,
-          message: 'Error retrieving medicines',
-          error
-        }
-      )
+    return res.status(500).send({
+      success: false,
+      message: 'Error retrieving medicines',
+      error
+    })
   }
 }
-
 // Obtener un medicamento por ID
 export const getMedicineById = async (req, res) => {
   try {

@@ -51,21 +51,21 @@ api.delete(
 )
 
 // Filtrar por proveedor
-api.get(
+api.post(
   '/filter/provider',
   [validateJwt],
   filterByProvider
 )
 
 // Filtrar por fecha de vencimiento
-api.get(
+api.post(
   '/filter/expiration',
   [validateJwt],
   filterByExpiration
 )
 
 // Filtrar por bajo stock
-api.get(
+api.post(
   '/filter/lowStock',
   [validateJwt],
   filterByLowStock

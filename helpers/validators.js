@@ -2,11 +2,16 @@
 
 import { body } from 'express-validator'
 import { validateErrors } from './validate.error.js'
-import { existEmail, existUsername, existDPI, diagnosisCodeExists, patientExists, doctorExists, diagnosesExist, existMedicineName, existMedicalHistory, existDrug, existUser } from './db.validators.js'
+import { existEmail, existUsername, existDPI, existMedicineName} from './db.validators.js'
 
 export const registerPatientValidator = [
   body('name', 'Name cannot be empty').notEmpty(),
   body('surname', 'Surname cannot be empty').notEmpty(),
+  body('DPI', 'DPI must be a valid 13-digit number')
+    .notEmpty()
+    .isLength({ min: 13, max: 13 })
+    .isNumeric()
+    .custom(existDPI),
   body('email', 'Email cannot be empty or is not a valid email')
     .notEmpty()
     .isEmail()

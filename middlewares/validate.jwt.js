@@ -14,7 +14,8 @@ export const validateJwt = async(req, res, next)=>{
         //verificar si viene el token
         if(!authorization) return res.status(401).send({message: 'Unauthorized'})
         //Desencriptar el token
-        let user = jwt.verify(authorization, secretKey)
+        let token = authorization.replace('Bearer ', '')
+        let user = jwt.verify(token, secretKey)
         //Verificar que aún exista el usuario en la BD
         const validateUser = await findUser(user.uid)
         if(!validateUser) return res.status(404).send(
